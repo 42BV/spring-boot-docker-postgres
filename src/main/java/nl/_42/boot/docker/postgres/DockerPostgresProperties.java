@@ -8,7 +8,7 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "docker.postgres", ignoreUnknownFields = false)
 public class DockerPostgresProperties {
 
-    private boolean enabled = false;
+    private boolean enabled = true;
 
     private String stdOutFilename = "docker-std-out.log";
 
