@@ -1,13 +1,13 @@
-package nl._42.boot.docker.postgres;
+package nl._42.boot.docker.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
-public class DockerPostgresTailer {
+public class DockerInfiniteProcessTailer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DockerPostgresTailer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DockerInfiniteProcessTailer.class);
 
     private final Thread dockerThread;
     private final String dockerStandardOutFilename;
@@ -17,11 +17,11 @@ public class DockerPostgresTailer {
 
     private Integer sleepTime = 0;
 
-    public DockerPostgresTailer(Thread dockerThread,
-                                String dockerStandardOutFilename,
-                                String dockerStandardErrorFilename,
-                                String startupVerificationText,
-                                Integer timeout) {
+    public DockerInfiniteProcessTailer( Thread dockerThread,
+                                        String dockerStandardOutFilename,
+                                        String dockerStandardErrorFilename,
+                                        String startupVerificationText,
+                                        Integer timeout) {
         this.dockerThread = dockerThread;
         this.dockerStandardOutFilename = dockerStandardOutFilename;
         this.dockerStandardErrorFilename = dockerStandardErrorFilename;
