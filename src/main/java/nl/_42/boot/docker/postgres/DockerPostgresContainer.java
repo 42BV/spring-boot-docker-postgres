@@ -12,15 +12,8 @@ public class DockerPostgresContainer extends DockerInfiniteProcessRunner {
             "docker run --rm -e POSTGRES_PASSWORD=${password} -p ${port}:5432 --name ${containerName} ${imageName}:${imageVersion}";
 
     public DockerPostgresContainer(DockerPostgresProperties properties) {
-        super(
-                COMMAND,
-                properties.getProperties(),
-                properties.getStdOutFilename(),
-                properties.getStdErrFilename(),
-                properties.getStartupVerificationText(),
-                properties.getTimeout());
+        super(COMMAND, properties);
 
-        LOGGER.info(">>> Configuring Docker Postgres");
         LOGGER.info("| Docker Postgres Properties");
         LOGGER.info("| * Image name: " + properties.getImageName());
         LOGGER.info("| * Image version: " + properties.getImageVersion());

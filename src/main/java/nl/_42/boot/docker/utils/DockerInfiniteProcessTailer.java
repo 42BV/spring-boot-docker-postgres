@@ -1,5 +1,6 @@
 package nl._42.boot.docker.utils;
 
+import nl._42.boot.docker.postgres.DockerPostgresProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,15 +19,12 @@ public class DockerInfiniteProcessTailer {
     private Integer sleepTime = 0;
 
     public DockerInfiniteProcessTailer( Thread dockerThread,
-                                        String dockerStandardOutFilename,
-                                        String dockerStandardErrorFilename,
-                                        String startupVerificationText,
-                                        Integer timeout) {
+                                        DockerPostgresProperties properties) {
         this.dockerThread = dockerThread;
-        this.dockerStandardOutFilename = dockerStandardOutFilename;
-        this.dockerStandardErrorFilename = dockerStandardErrorFilename;
-        this.startupVerificationText = startupVerificationText;
-        this.timeout = timeout;
+        this.dockerStandardOutFilename = properties.getStdOutFilename();
+        this.dockerStandardErrorFilename = properties.getStdErrFilename();
+        this.startupVerificationText = properties.getStartupVerificationText();
+        this.timeout = properties.getTimeout();
     }
 
     public boolean verify() throws IOException {
@@ -74,6 +72,7 @@ public class DockerInfiniteProcessTailer {
                     }
                     catch( InterruptedException ex ) {
                         LOGGER.error("| = Docker Postgres container failed to initialize");
+                        logErrorLinesAsError();
                         return false;
                     }
                 }
@@ -86,6 +85,7 @@ public class DockerInfiniteProcessTailer {
             reader.close();
         }
 
+        logErrorLinesAsError();
         LOGGER.error("| = Docker Postgres container failed to initialize");
         return false;
     }
