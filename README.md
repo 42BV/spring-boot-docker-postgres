@@ -1,5 +1,7 @@
 # Docker Postgres
 
+Library for hooking Docker-based Postgres into your Spring Boot lifecycle, right before Liquibase and deleting it afterwards.
+
 > If you develop for a particular database, your development process should reflect this.
 
 # Introduction
@@ -26,7 +28,7 @@ Follow the link for your Linux distro: https://docs.docker.com/engine/installati
 
 ## Liquibase
 
-This library works on the assumption that you use Liquibase. This dependency is checked to determine the moment when the Docker Postgres must be available. Liquibase creates the database schema before the rest of your application runs. It is highly recommended to use Liquibase: http://www.liquibase.org/
+This library works on the assumption that you use Liquibase. This dependency is checked to determine the moment when the Docker Postgres container must be available. Liquibase creates the database schema before the rest of your application runs. It is highly recommended to use Liquibase: http://www.liquibase.org/
 
 # Usage
 
@@ -139,3 +141,21 @@ docker image rm postgres
 (fill in any name other than postgres)
 
 Docker has a lot more in store than what we have shown here. Be sure to check it out if you want to learn more: https://docs.docker.com/
+
+## Log files
+
+Since Docker is run through Java's ```ProcessBuilder```, the output of the process is sent to two files. These two files are constantly removed and reused by all Docker calls and across parallel Docker processes. Be sure to understand this if you intend to do anything with the log files.
+
+# Docker Postgres in action
+
+When docker-postgres starts, your log will show this:
+
+![Starting Docker Postgres](images/docker-postgres-start.png)
+
+After it has found the verification text, you will see this:
+
+![Docker Postgres ready](images/docker-postgres-ready.png)
+
+When the Spring Container is gracefully shutdown, you will see this:
+
+![Tearing down Docker Postgres](images/docker-postgres-teardown.png)
