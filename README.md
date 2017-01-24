@@ -64,7 +64,7 @@ You can tweak the configuration to use for your Docker run.
 | enabled                   | determines if the Postgres container must be started. Default: true |
 | force-clean               | determines if the container must be removed if it already exists. Default: false|
 | image-name                | the image name to be used for deploying the container. Default: postgres |
-| image-version             | the version of the image to be used for deplying the container. Advice is to specify wherever possible. Default: latest |
+| image-version             | the version of the image to be used for deploying the container. Advice is to specify wherever possible. Default: latest |
 | password                  | the password used to apply for the database on the container. Default: postgres |
 | port                      | the port that you can access the database on. Will be mapped to the container's own 5432 port. Default: 5432 |
 | startup-verification-text | the text that will be searched within the Docker log. If found, the Postgres container is available. Default: "PostgreSQL init process complete; ready for start up." |
