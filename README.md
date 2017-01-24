@@ -24,6 +24,9 @@ If you are on Mac OS X, following these instructions: https://docs.docker.com/do
 
 Follow the link for your Linux distro: https://docs.docker.com/engine/installation/linux/
 
+## Liquibase
+
+This library works on the assumption that you use Liquibase. This dependency is checked to determine the moment when the Docker Postgres must be available. Liquibase creates the database schema before the rest of your application runs. It is highly recommended to use Liquibase: http://www.liquibase.org/
 
 # Usage
 
@@ -69,5 +72,70 @@ You can tweak the configuration to use for your Docker run.
 
 ## Best practices
 
+If you want to run ```spring-boot:run``` and unit tests at the same time, you may want to have two specific application.yml to cover for both situations.
+
+Eg, for ```spring-boot:run```:
+
+```yaml
+docker:
+  postgres:
+    image-version: 9.6
+```
+
+And for your unit tests in src/test/resources:
+
+```yaml
+docker:
+  postgres:
+    image-version: 9.6
+    force-clean: true
+    container-name: postgression2
+    port: 5433
+```
+
+Note that the force-clean flag is useful for tests. There is no reason to keep the container in that case and you might as well remove it, when another version is found.
+
+Since the Postgres containers will be run on different identifiers and ports, you can run them in parallel.
+
 # Troubleshooting
 
+There is one major caveat; the entire process hinges on a graceful shutdown of your Spring container. There are a couple of reasons when this will not occur:
+* you pressed the 'stop' button in IntelliJ
+* you ```kill -9``` your Spring container
+* the process kills itself for whatever reason
+
+In all of these situations, the end result is the same: the container will keep on running. 
+
+You need to know a couple of Docker commands to help you out.
+
+## Cleaning up the container
+
+Show the list of containers currently running:
+
+```
+docker ps
+```
+
+Kill the container:
+
+```
+docker rm -vf postgression
+```
+
+(fill in any name other than postgression)
+
+Show the images you have currently downloaded:
+
+```
+docker image ls
+```
+
+Delete an image (and trigger a new download on the next run):
+
+```
+docker image rm postgres
+```
+
+(fill in any name other than postgres)
+
+Docker has a lot more in store than what we have shown here. Be sure to check it out if you want to learn more: https://docs.docker.com/
