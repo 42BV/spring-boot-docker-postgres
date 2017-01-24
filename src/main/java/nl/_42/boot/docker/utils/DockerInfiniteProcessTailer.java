@@ -19,12 +19,14 @@ public class DockerInfiniteProcessTailer {
     private Integer sleepTime = 0;
 
     public DockerInfiniteProcessTailer( Thread dockerThread,
-                                        DockerPostgresProperties properties) {
+                                        DockerPostgresProperties properties,
+                                        boolean imageDownloaded) {
         this.dockerThread = dockerThread;
         this.dockerStandardOutFilename = properties.getStdOutFilename();
         this.dockerStandardErrorFilename = properties.getStdErrFilename();
         this.startupVerificationText = properties.getStartupVerificationText();
-        this.timeout = properties.getTimeout();
+        this.timeout = imageDownloaded ? properties.getTimeout() : -1;
+        LOGGER.info("| Applied timeout: (-1 means no timeout): " + this.timeout);
     }
 
     public boolean verify() throws IOException {
@@ -56,7 +58,7 @@ public class DockerInfiniteProcessTailer {
                 }
                 else {
                     try {
-                        if (sleepTime > timeout) {
+                        if (timeout != -1 && sleepTime > timeout) {
                             LOGGER.error("| = Startup could not be verified. Interrupting process. <check your verification string>");
                             dockerThread.interrupt();
                         }

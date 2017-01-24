@@ -17,9 +17,9 @@ public class DockerPostgresBootSequence {
 
     public DockerPostgresContainer execute() throws IOException {
 
-        new DockerListContainers(properties).hasImage();
+        boolean imageDownloaded = new DockerListContainers(properties).hasImage(properties.getImageName(), properties.getImageVersion());
 
-        DockerPostgresContainer postgresContainer = new DockerPostgresContainer(properties);
+        DockerPostgresContainer postgresContainer = new DockerPostgresContainer(properties, imageDownloaded);
         postgresContainer.start();
         if (postgresContainer.verify()) {
             LOGGER.info("| Postgres container successfully started");

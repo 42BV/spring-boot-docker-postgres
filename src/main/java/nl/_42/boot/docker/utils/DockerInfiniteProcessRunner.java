@@ -11,12 +11,13 @@ public abstract class DockerInfiniteProcessRunner extends Thread {
     private final ProcessRunner processRunner;
 
     public DockerInfiniteProcessRunner(String command,
-                                       DockerPostgresProperties properties) {
+                                       DockerPostgresProperties properties,
+                                       boolean imageDownloaded) {
         super();
 
         processRunner = new ProcessRunner(command, properties);
 
-        this.tailer = new DockerInfiniteProcessTailer(this, properties);
+        this.tailer = new DockerInfiniteProcessTailer(this, properties, imageDownloaded);
     }
 
     public boolean verify() throws IOException {

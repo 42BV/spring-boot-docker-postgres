@@ -11,8 +11,8 @@ public class DockerPostgresContainer extends DockerInfiniteProcessRunner {
     private final static String COMMAND =
             "docker run --rm -e POSTGRES_PASSWORD=${password} -p ${port}:5432 --name ${containerName} ${imageName}:${imageVersion}";
 
-    public DockerPostgresContainer(DockerPostgresProperties properties) {
-        super(COMMAND, properties);
+    public DockerPostgresContainer(DockerPostgresProperties properties, boolean imageDownloaded) {
+        super(COMMAND, properties, imageDownloaded);
 
         LOGGER.info("| Docker Postgres Properties");
         LOGGER.info("| * Image name: " + properties.getImageName());
@@ -24,6 +24,10 @@ public class DockerPostgresContainer extends DockerInfiniteProcessRunner {
         LOGGER.info("| * Startup Verification Text: [" + properties.getStartupVerificationText() + "]");
         LOGGER.info("| * Std out: " + properties.getStdOutFilename());
         LOGGER.info("| * Std err: " + properties.getStdErrFilename());
+
+        if (!imageDownloaded) {
+            LOGGER.info("| Process will download (no visual feedback, please be patient)...");
+        }
     }
 
 }

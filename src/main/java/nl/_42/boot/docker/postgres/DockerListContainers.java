@@ -18,22 +18,29 @@ public class DockerListContainers extends DockerFiniteProcessRunner {
         super(COMMAND, properties);
     }
 
-    public boolean hasImage() throws IOException {
+    public boolean hasImage(String imageName, String imageVersion) throws IOException {
         DockerOutputResult result = execute();
         String[] lines = StringUtils.split(result.getStdOut(), "\r\n");
         boolean first = true;
         for (String line : lines) {
-            if (first) {
+            if (first) { // Ignore header line
                 first = false;
                 continue;
             }
             if (line != null && line.length() > 0) {
                 String[] fields = line.split(" +");
-                System.out.println(fields[0]);
-                System.out.println(fields[1]);
+                if (fields.length > 2) {
+                    String currentImageName = fields[0];
+                    String currentImageVersion = fields[1];
+                    if (imageName.equals(currentImageName) && imageVersion.equals(currentImageVersion)) {
+                        LOGGER.info("| Image [" + imageName + ":" + imageVersion + "] already downloaded");
+                        return true;
+                    }
+                }
             }
         }
-        return true;
+        LOGGER.info("| Image [" + imageName + ":" + imageVersion + "] not yet downloaded");
+        return false;
     }
 
 }
