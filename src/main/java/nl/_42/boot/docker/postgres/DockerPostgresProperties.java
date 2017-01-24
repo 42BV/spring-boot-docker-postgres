@@ -28,6 +28,8 @@ public class DockerPostgresProperties {
 
     private Integer timeout = 300000; // 5 minutes because of time required for downloading?
 
+    private boolean forceClean = false;
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -108,6 +110,14 @@ public class DockerPostgresProperties {
         this.startupVerificationText = startupVerificationText;
     }
 
+    public boolean isForceClean() {
+        return forceClean;
+    }
+
+    public void setForceClean(boolean forceClean) {
+        this.forceClean = forceClean;
+    }
+
     public Map<String, String> getProperties() {
         Map<String,String> properties = new HashMap<>();
         properties.put("stdOutFilename", getStdOutFilename());
@@ -119,6 +129,7 @@ public class DockerPostgresProperties {
         properties.put("imageName", getImageName());
         properties.put("imageVersion", getImageVersion());
         properties.put("startupVerificationText", getStartupVerificationText());
+        properties.put("forceClean", Boolean.toString(isForceClean()));
         return properties;
     }
 

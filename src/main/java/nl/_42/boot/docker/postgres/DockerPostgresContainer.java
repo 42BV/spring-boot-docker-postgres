@@ -14,17 +14,6 @@ public class DockerPostgresContainer extends DockerInfiniteProcessRunner {
     public DockerPostgresContainer(DockerPostgresProperties properties, boolean imageDownloaded) {
         super(COMMAND, properties, imageDownloaded);
 
-        LOGGER.info("| Docker Postgres Properties");
-        LOGGER.info("| * Image name: " + properties.getImageName());
-        LOGGER.info("| * Image version: " + properties.getImageVersion());
-        LOGGER.info("| * Timeout: " + properties.getTimeout());
-        LOGGER.info("| * Container name: " + properties.getContainerName());
-        LOGGER.info("| * Port: " + properties.getPort());
-        LOGGER.info("| * Password: " + properties.getPassword());
-        LOGGER.info("| * Startup Verification Text: [" + properties.getStartupVerificationText() + "]");
-        LOGGER.info("| * Std out: " + properties.getStdOutFilename());
-        LOGGER.info("| * Std err: " + properties.getStdErrFilename());
-
         if (!imageDownloaded) {
             LOGGER.info("| Process will download (no visual feedback, please be patient)...");
         }

@@ -1,6 +1,8 @@
 package nl._42.boot.docker.utils;
 
 import nl._42.boot.docker.postgres.DockerPostgresProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -9,8 +11,11 @@ import java.nio.file.Paths;
 
 public abstract class DockerFiniteProcessRunner {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DockerFiniteProcessRunner.class);
+
     private final ProcessRunner processRunner;
 
+    private final String command;
     private final String stdOutFilename;
     private final String stdErrFilename;
 
@@ -18,6 +23,7 @@ public abstract class DockerFiniteProcessRunner {
                                        DockerPostgresProperties properties) {
         super();
 
+        this.command = command;
         this.stdOutFilename = properties.getStdOutFilename();
         this.stdErrFilename = properties.getStdErrFilename();
 
@@ -26,6 +32,11 @@ public abstract class DockerFiniteProcessRunner {
 
     public DockerOutputResult execute() throws IOException {
         int exitValue = processRunner.execute();
+
+        if (exitValue != 0) {
+            LOGGER.error("| Docker command: " + command + " failed to execute");
+            throw new ExceptionInInitializerError("Docker command: " + command + " failed to execute");
+        }
 
         return new DockerOutputResult(
                 readFile(stdOutFilename, Charset.defaultCharset()),

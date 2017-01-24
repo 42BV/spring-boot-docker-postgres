@@ -17,8 +17,28 @@ public class DockerPostgresBootSequence {
 
     public DockerPostgresContainer execute() throws IOException {
 
-        boolean imageDownloaded = new DockerListContainers(properties).hasImage(properties.getImageName(), properties.getImageVersion());
+        LOGGER.info("| Docker Postgres Properties");
+        LOGGER.info("| * Image name: " + properties.getImageName());
+        LOGGER.info("| * Image version: " + properties.getImageVersion());
+        LOGGER.info("| * Force clean: " + properties.isForceClean());
+        LOGGER.info("| * Timeout: " + properties.getTimeout());
+        LOGGER.info("| * Container name: " + properties.getContainerName());
+        LOGGER.info("| * Port: " + properties.getPort());
+        LOGGER.info("| * Password: " + properties.getPassword());
+        LOGGER.info("| * Startup Verification Text: [" + properties.getStartupVerificationText() + "]");
+        LOGGER.info("| * Std out: " + properties.getStdOutFilename());
+        LOGGER.info("| * Std err: " + properties.getStdErrFilename());
 
+        // Force clean the old container
+        if (    properties.isForceClean() &&
+                new DockerContainerAvailableCheck(properties).hasContainer()) {
+            new DockerForceRemoveContainer(properties).forceRemove();
+        }
+
+        // Verify if the image is downloaded (influences the timeout)
+        boolean imageDownloaded = new DockerImageAvailableCheck(properties).hasImage();
+
+        // Start up the Docker Postgres container (blocking thread)
         DockerPostgresContainer postgresContainer = new DockerPostgresContainer(properties, imageDownloaded);
         postgresContainer.start();
         if (postgresContainer.verify()) {
