@@ -150,12 +150,12 @@ Since Docker is run through Java's ```ProcessBuilder```, the output of the proce
 
 When docker-postgres starts, your log will show this:
 
-![Starting Docker Postgres](images/docker-postgres-start.png)
+![Starting Docker Postgres](images/01-docker-postgres-start.png)
 
 After it has found the verification text, you will see this:
 
-![Docker Postgres ready](images/docker-postgres-ready.png)
+![Docker Postgres ready](images/02-docker-postgres-ready.png)
 
 When the Spring Container is gracefully shutdown, you will see this:
 
-![Tearing down Docker Postgres](images/docker-postgres-teardown.png)
+![Tearing down Docker Postgres](images/03-docker-postgres-teardown.png)
