@@ -29,6 +29,9 @@ public class DockerPostgresBootSequence {
         LOGGER.info("| * Std out: " + properties.getStdOutFilename());
         LOGGER.info("| * Std err: " + properties.getStdErrFilename());
 
+        // Verify if Docker is available on the command-line
+        new DockerAvailableCheck(properties).tryDocker();
+
         // Force clean the old container
         if (    properties.isForceClean() &&
                 new DockerContainerAvailableCheck(properties).hasContainer()) {

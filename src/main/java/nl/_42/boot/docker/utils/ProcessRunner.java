@@ -74,7 +74,7 @@ public class ProcessRunner {
             process = pb.start();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("| " + e.getMessage());
             return 1; // Error
         }
 
