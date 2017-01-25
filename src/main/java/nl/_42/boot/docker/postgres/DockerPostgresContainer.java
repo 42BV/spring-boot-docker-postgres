@@ -8,11 +8,8 @@ public class DockerPostgresContainer extends DockerInfiniteProcessRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DockerPostgresContainer.class);
 
-    private final static String COMMAND =
-            "docker run --rm -e POSTGRES_PASSWORD=${password} -p ${port}:5432 --name ${containerName} ${imageName}:${imageVersion}";
-
     public DockerPostgresContainer(DockerPostgresProperties properties, boolean imageDownloaded) {
-        super(COMMAND, properties, imageDownloaded);
+        super(properties.getDockerCommand(), properties, imageDownloaded);
 
         if (!imageDownloaded) {
             LOGGER.info("| Process will download (no visual feedback, please be patient)...");

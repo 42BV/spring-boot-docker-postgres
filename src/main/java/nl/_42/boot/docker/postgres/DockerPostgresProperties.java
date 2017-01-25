@@ -26,6 +26,8 @@ public class DockerPostgresProperties {
 
     private String startupVerificationText = "PostgreSQL init process complete; ready for start up.";
 
+    private String dockerCommand = "docker run --rm -e POSTGRES_PASSWORD=${password} -p 5432:${port} --name ${containerName} ${imageName}:${imageVersion}";
+
     private Integer timeout = 300000; // 5 minutes because of time required for downloading?
 
     private boolean forceClean = false;
@@ -110,6 +112,14 @@ public class DockerPostgresProperties {
         this.startupVerificationText = startupVerificationText;
     }
 
+    public String getDockerCommand() {
+        return dockerCommand;
+    }
+
+    public void setDockerCommand(String dockerCommand) {
+        this.dockerCommand = dockerCommand;
+    }
+
     public boolean isForceClean() {
         return forceClean;
     }
@@ -129,6 +139,7 @@ public class DockerPostgresProperties {
         properties.put("imageName", getImageName());
         properties.put("imageVersion", getImageVersion());
         properties.put("startupVerificationText", getStartupVerificationText());
+        properties.put("dockerCommand", getDockerCommand());
         properties.put("forceClean", Boolean.toString(isForceClean()));
         return properties;
     }
