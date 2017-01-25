@@ -69,6 +69,7 @@ public class ProcessRunner {
             LOGGER.debug("| Process redirectOutput(): " + pb.redirectOutput());
             LOGGER.debug("| Process redirectError(): " + pb.redirectError());
 
+            LOGGER.info("| $> " + String.join(" ", this.command));
             pb.command(command);
             process = pb.start();
 
