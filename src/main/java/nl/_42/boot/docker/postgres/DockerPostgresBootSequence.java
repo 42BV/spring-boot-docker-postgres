@@ -26,6 +26,7 @@ public class DockerPostgresBootSequence {
         LOGGER.info("| * Port: " + properties.getPort());
         LOGGER.info("| * Password: " + properties.getPassword());
         LOGGER.info("| * Startup Verification Text: [" + properties.getStartupVerificationText() + "]");
+        LOGGER.info("| * Docker command: [" + properties.getDockerCommand() + "]");
         LOGGER.info("| * Std out: " + properties.getStdOutFilename());
         LOGGER.info("| * Std err: " + properties.getStdErrFilename());
 
