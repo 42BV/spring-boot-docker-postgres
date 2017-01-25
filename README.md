@@ -148,6 +148,17 @@ Docker has a lot more in store than what we have shown here. Be sure to check it
 
 Since Docker is run through Java's ```ProcessBuilder```, the output of the process is sent to two files. These two files are constantly removed and reused by all Docker calls and across parallel Docker processes. Be sure to understand this if you intend to do anything with the log files.
 
+## Spring Boot log
+
+A lot of information can be read from the Spring Boot log. The parts which pertain to Docker Postgres are prefixed with a '|' symbol. Within this group exist:
+* non-prefixed; actions take in the library
+* \>; output from std out/err
+* $\>; commands run with Java's ProcessBuilder
+
+When a failure occurs, the error log will be read and logged. If the container starts up to spec, than it will be logged at warn level. If not, at error level.
+
+If the container does not start up, the Spring Boot startup sequence will be terminated.
+
 # Docker Postgres in action
 
 When docker-postgres starts, your log will show this:
