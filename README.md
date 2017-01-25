@@ -40,14 +40,14 @@ Add the following two dependencies to your POM. This is enough to make it all wo
 <dependency>
     <groupId>nl.42</groupId>
     <artifactId>spring-boot-starter-docker</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <scope>provided</scope>
 </dependency>
 
 <dependency>
     <groupId>nl.42</groupId>
     <artifactId>spring-boot-docker-postgres</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
     <scope>provided</scope>
 </dependency>
 ```
