@@ -61,6 +61,8 @@ You can tweak the configuration to use for your Docker run.
 | argument                  | description   |
 | ------------------------- | ------------- |
 | container-name            | the Docker container on which the image has to run. Default: postgression |
+| custom-variables          | contains a map of your own variables. These can be used to substitute values if you provide your own docker-command. No default |
+| docker-command            | the docker command to use to start the container with postgres. Default: 'docker run --rm -e POSTGRES_PASSWORD=${password} -p 5432:${port} --name ${containerName} ${imageName}:${imageVersion}' |
 | enabled                   | determines if the Postgres container must be started. Default: true |
 | force-clean               | determines if the container must be removed if it already exists. Default: false|
 | image-name                | the image name to be used for deploying the container. Default: postgres |
