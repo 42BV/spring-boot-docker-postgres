@@ -26,7 +26,7 @@ public class DockerPostgresProperties {
 
     private String startupVerificationText = "PostgreSQL init process complete; ready for start up.";
 
-    private String dockerCommand = "docker run --rm -e POSTGRES_PASSWORD=${password} -p 5432:${port} --name ${containerName} ${imageName}:${imageVersion}";
+    private String dockerCommand = "docker run --rm -e POSTGRES_PASSWORD=${password} -p ${port}:5432 --name ${containerName} ${imageName}:${imageVersion}";
 
     private Integer timeout = 300000; // 5 minutes because of time required for downloading?
 

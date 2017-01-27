@@ -151,7 +151,7 @@ Since Docker is run through Java's ```ProcessBuilder```, the output of the proce
 ## Spring Boot log
 
 A lot of information can be read from the Spring Boot log. The parts which pertain to Docker Postgres are prefixed with a '|' symbol. Within this group exist:
-* non-prefixed; actions take in the library
+* non-prefixed; actions taken in the library
 * \>; output from std out/err
 * $\>; commands run with Java's ProcessBuilder
 
