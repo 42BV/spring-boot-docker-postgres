@@ -32,6 +32,8 @@ public class DockerPostgresProperties {
 
     private boolean forceClean = false;
 
+    private Integer afterVerificationWait = 0;
+
     private Map<String, String> customVariables = new HashMap<>();
 
     public boolean isEnabled() {
@@ -138,6 +140,14 @@ public class DockerPostgresProperties {
         this.customVariables = customVariables;
     }
 
+    public Integer getAfterVerificationWait() {
+        return afterVerificationWait;
+    }
+
+    public void setAfterVerificationWait(Integer afterVerificationWait) {
+        this.afterVerificationWait = afterVerificationWait;
+    }
+
     public Map<String, String> getProperties() {
         Map<String,String> properties = new HashMap<>();
         properties.put("stdOutFilename", getStdOutFilename());
@@ -151,6 +161,7 @@ public class DockerPostgresProperties {
         properties.put("startupVerificationText", getStartupVerificationText());
         properties.put("dockerCommand", getDockerCommand());
         properties.put("forceClean", Boolean.toString(isForceClean()));
+        properties.put("afterVerificationWait", Boolean.toString(isForceClean()));
         properties.putAll(getCustomVariables());
         return properties;
     }

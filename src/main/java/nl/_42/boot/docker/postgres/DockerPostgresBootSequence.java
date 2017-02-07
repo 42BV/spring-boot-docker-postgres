@@ -15,7 +15,7 @@ public class DockerPostgresBootSequence {
         this.properties = properties;
     }
 
-    public DockerPostgresContainer execute() throws IOException {
+    public DockerPostgresContainer execute() throws IOException, InterruptedException {
 
         LOGGER.info("| Docker Postgres Properties");
         LOGGER.info("| * Image name: " + properties.getImageName());
@@ -50,6 +50,7 @@ public class DockerPostgresBootSequence {
         DockerPostgresContainer postgresContainer = new DockerPostgresContainer(properties, imageDownloaded);
         postgresContainer.start();
         if (postgresContainer.verify()) {
+            applyAfterVerificationWait(properties.getAfterVerificationWait());
             LOGGER.info("| Postgres container successfully started");
         } else {
             LOGGER.error("| Postgres failed to initialize");
@@ -57,6 +58,13 @@ public class DockerPostgresBootSequence {
         }
 
         return postgresContainer;
+    }
+
+    private void applyAfterVerificationWait(Integer afterVerificationWait) throws InterruptedException {
+        if (afterVerificationWait > 0) {
+            LOGGER.info("| Applying after verification wait of " + afterVerificationWait + "ms");
+            Thread.sleep(afterVerificationWait);
+        }
     }
 
 }
