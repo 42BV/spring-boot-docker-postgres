@@ -26,6 +26,7 @@ public class DockerPostgresBootSequence {
         LOGGER.info("| * Port: " + properties.getPort());
         LOGGER.info("| * Password: " + properties.getPassword());
         LOGGER.info("| * Startup Verification Text: [" + properties.getStartupVerificationText() + "]");
+        LOGGER.info("| * After verification wait: " + properties.getAfterVerificationWait() + "ms");
         LOGGER.info("| * Docker command: [" + properties.getDockerCommand() + "]");
         LOGGER.info("| * Custom variables (" + properties.getCustomVariables().size() + ")");
         for (String key : properties.getCustomVariables().keySet()) {

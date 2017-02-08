@@ -12,20 +12,18 @@ public class DockerContainerAvailableCheck extends AbstractDockerAvailableCheck 
     private final static String COMMAND = "docker ps";
 
     private final String containerName;
-    private final String imageNameAndVersion;
 
     public DockerContainerAvailableCheck(DockerPostgresProperties properties) {
         super(COMMAND, properties);
         this.containerName = properties.getContainerName();
-        this.imageNameAndVersion = properties.getImageName() + ":" + properties.getImageVersion();
     }
 
     public boolean hasContainer() throws IOException {
-        if (hasValues(new ExpectedValue(1, imageNameAndVersion), new ExpectedValue(6, containerName))) {
-            LOGGER.info("| Container [" + containerName + " for " + imageNameAndVersion + "] exists");
+        if (hasValues(new ExpectedValue(6, containerName))) {
+            LOGGER.info("| Container [" + containerName + "] exists");
             return true;
         }
-        LOGGER.info("| Container [" + containerName + " for " + imageNameAndVersion + "] not found; no force remove needed");
+        LOGGER.info("| Container [" + containerName + "] not found; no force remove needed");
         return false;
     }
 

@@ -94,8 +94,10 @@ docker:
     image-version: 9.6
     force-clean: true
     container-name: postgression2
-    port: 5433
+    port: 5434
 ```
+
+Be sure to point your datasource url to the same port.
 
 Note that the force-clean flag is useful for tests. There is no reason to keep the container in that case and you might as well remove it, when another version is found.
 
@@ -158,6 +160,24 @@ A lot of information can be read from the Spring Boot log. The parts which perta
 When a failure occurs, the error log will be read and logged. If the container starts up to spec, than it will be logged at warn level. If not, at error level.
 
 If the container does not start up, the Spring Boot startup sequence will be terminated.
+
+## Slow system?
+
+If you have a slow system, your Spring Boot may be faster than the time when Postgres is really ready (ie, this is not the same as when Docker tells it is ready). The result is the following error:
+
+```
+Caused by: org.postgresql.util.PSQLException: FATAL: the database system is starting up
+```
+
+This can be remedied by applying a post startup verification wait time (in milliseconds) to your application:
+
+```yaml
+docker:
+  postgres:
+    afterVerificationWait: 2000
+```
+
+In this example, it will wait for an extra 2 seconds.
 
 # Docker Postgres in action
 
