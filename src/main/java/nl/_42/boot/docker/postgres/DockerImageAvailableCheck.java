@@ -9,7 +9,7 @@ public class DockerImageAvailableCheck extends AbstractDockerAvailableCheck {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DockerPostgresBootSequence.class);
 
-    private final static String COMMAND = "docker image ls";
+    private final static String COMMAND = "docker images";
 
     private final String imageName;
     private final String imageVersion;
