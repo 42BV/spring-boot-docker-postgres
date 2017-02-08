@@ -30,7 +30,7 @@ public class DockerPostgresProperties {
 
     private Integer timeout = 300000; // 5 minutes because of time required for downloading?
 
-    private boolean forceClean = false;
+    private boolean forceClean = true;
 
     private Integer afterVerificationWait = 0;
 
