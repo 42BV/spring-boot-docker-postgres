@@ -2,17 +2,21 @@ package nl._42.boot.docker.postgres;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 
 import java.io.IOException;
 
 public class DockerPostgresBootSequence {
 
+    private static final Integer DEFAULT_PORT = 5432;
     private static final Logger LOGGER = LoggerFactory.getLogger(DockerPostgresBootSequence.class);
 
     private final DockerPostgresProperties properties;
+    private final DataSourceProperties dataSourceProperties;
 
-    public DockerPostgresBootSequence(DockerPostgresProperties properties) {
+    public DockerPostgresBootSequence(DockerPostgresProperties properties, DataSourceProperties dataSourceProperties) {
         this.properties = properties;
+        this.dataSourceProperties = dataSourceProperties;
     }
 
     public DockerPostgresContainer execute() throws IOException, InterruptedException {
@@ -23,6 +27,14 @@ public class DockerPostgresBootSequence {
         LOGGER.info("| * Force clean: " + properties.isForceClean());
         LOGGER.info("| * Timeout: " + properties.getTimeout());
         LOGGER.info("| * Container name: " + properties.getContainerName());
+        if (properties.getPort() == null) {
+            if (dataSourceProperties.getUrl() != null) {
+                properties.setPort(determinePort(dataSourceProperties.getUrl()));
+                // Scrap the port from the JDBC URL
+            } else {
+                properties.setPort(DEFAULT_PORT);
+            }
+        }
         LOGGER.info("| * Port: " + properties.getPort());
         LOGGER.info("| * Password: " + properties.getPassword());
         LOGGER.info("| * Startup Verification Text: [" + properties.getStartupVerificationText() + "]");
@@ -60,6 +72,18 @@ public class DockerPostgresBootSequence {
         }
 
         return postgresContainer;
+    }
+
+    private Integer determinePort(String url) {
+        if (url == null || url.length() == 0) {
+            throw new ExceptionInInitializerError("spring.datasource.url is empty. No port could be derived.");
+        }
+        int lastColonPos = url.lastIndexOf(':');
+        int slashAfterPortPos = url.indexOf('/', lastColonPos);
+        if (lastColonPos == -1 || slashAfterPortPos == -1 || slashAfterPortPos < lastColonPos + 2) {
+            throw new ExceptionInInitializerError("spring.datasource.url does not have port information: [" + url + "]. No port could be derived.");
+        }
+        return Integer.parseInt(url.substring(lastColonPos + 1, slashAfterPortPos));
     }
 
     private void applyAfterVerificationWait(Integer afterVerificationWait) throws InterruptedException {

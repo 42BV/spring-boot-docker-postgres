@@ -16,7 +16,7 @@ public class DockerPostgresProperties {
 
     private String password = "postgres";
 
-    private Integer port = 5432;
+    private Integer port = null;
 
     private String imageName = "postgres";
 

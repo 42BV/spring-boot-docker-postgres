@@ -68,7 +68,7 @@ You can tweak the configuration to use for your Docker run.
 | image-name                | the image name to be used for deploying the container. Default: postgres |
 | image-version             | the version of the image to be used for deploying the container. Advice is to specify wherever possible. Default: latest |
 | password                  | the password used to apply for the database on the container. Default: postgres |
-| port                      | the port that you can access the database on. Will be mapped to the container's own 5432 port. Default: 5432 |
+| port                      | the port that you can access the database on will be taken from spring's datasource URL. |
 | startup-verification-text | the text that will be searched within the Docker log. If found, the Postgres container is available. Default: "PostgreSQL init process complete; ready for start up." |
 | std-out-filename          | the file to write the Docker output to. Default: "docker-std-out.log" |
 | std-err-filename          | the file to write the Docker errors to. Default: docker-std-err.log |
@@ -94,10 +94,9 @@ docker:
     image-version: 9.6
     force-clean: true
     container-name: postgression2
-    port: 5434
 ```
 
-Be sure to point your datasource url to the same port.
+Be sure to point your datasource url to another port, for example 5434 (instead of 5432).
 
 Note that the force-clean flag is useful for tests. There is no reason to keep the container in that case and you might as well remove it, when another version is found.
 
