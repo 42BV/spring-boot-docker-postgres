@@ -14,9 +14,11 @@ public class DockerInfiniteProcessTailer {
     private final String dockerStandardOutFilename;
     private final String dockerStandardErrorFilename;
     private final String startupVerificationText;
+    private final Integer timesExpectedVerificationText;
     private final Integer timeout;
 
     private Integer sleepTime = 0;
+    private Integer verificationTextEncountered = 0;
 
     public DockerInfiniteProcessTailer( Thread dockerThread,
                                         DockerPostgresProperties properties,
@@ -25,6 +27,7 @@ public class DockerInfiniteProcessTailer {
         this.dockerStandardOutFilename = properties.getStdOutFilename();
         this.dockerStandardErrorFilename = properties.getStdErrFilename();
         this.startupVerificationText = properties.getStartupVerificationText();
+        this.timesExpectedVerificationText = properties.getTimesExpectedVerificationText();
         this.timeout = imageDownloaded ? properties.getTimeout() : -1;
         LOGGER.info("| Applied timeout: (-1 means no timeout): " + this.timeout);
     }
@@ -44,13 +47,17 @@ public class DockerInfiniteProcessTailer {
                 if( reader.available() > 0 ) {
                     char readChar = (char)reader.read();
                     if (readChar == '\n') {
-                        if (line.toString().contains(startupVerificationText)) {
-                            LOGGER.info("| > " + line.toString());
-                            LOGGER.info("| = Docker startup verification text found");
-                            logErrorLinesAsWarning();
-                            return true;
-                        }
                         LOGGER.info("| > " + line.toString());
+                        if (line.toString().contains(startupVerificationText)) {
+                            verificationTextEncountered++;
+                            LOGGER.info("| = Verification text encountered " + verificationTextEncountered + "x");
+                            if (verificationTextEncountered == timesExpectedVerificationText) {
+                                LOGGER.info("| > " + line.toString());
+                                LOGGER.info("| = Docker startup verification text found");
+                                logErrorLinesAsWarning();
+                                return true;
+                            }
+                        }
                         line = new StringBuilder();
                     } else {
                         line.append(readChar);

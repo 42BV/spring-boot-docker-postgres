@@ -24,9 +24,11 @@ public class DockerPostgresProperties {
 
     private String containerName = "postgression";
 
-    private String startupVerificationText = "PostgreSQL init process complete; ready for start up.";
+    private String startupVerificationText = "database system is ready to accept connections";
 
-    private String dockerCommand = "docker run --rm -e POSTGRES_PASSWORD=${password} -p ${port}:5432 --name ${containerName} ${imageName}:${imageVersion}";
+    private Integer timesExpectedVerificationText = 2;
+
+    private String dockerCommand = "docker run --rm --tty -e POSTGRES_PASSWORD=${password} -p ${port}:5432 --name ${containerName} ${imageName}:${imageVersion}";
 
     private Integer timeout = 300000; // 5 minutes because of time required for downloading?
 
@@ -148,6 +150,14 @@ public class DockerPostgresProperties {
         this.afterVerificationWait = afterVerificationWait;
     }
 
+    public Integer getTimesExpectedVerificationText() {
+        return timesExpectedVerificationText;
+    }
+
+    public void setTimesExpectedVerificationText(Integer timesExpectedVerificationText) {
+        this.timesExpectedVerificationText = timesExpectedVerificationText;
+    }
+
     public Map<String, String> getProperties() {
         Map<String,String> properties = new HashMap<>();
         properties.put("stdOutFilename", getStdOutFilename());
@@ -159,6 +169,8 @@ public class DockerPostgresProperties {
         properties.put("imageName", getImageName());
         properties.put("imageVersion", getImageVersion());
         properties.put("startupVerificationText", getStartupVerificationText());
+        properties.put("timesExpectedVerificationText", getTimesExpectedVerificationText().toString());
+        properties.put("afterVerificationWait", getAfterVerificationWait().toString());
         properties.put("dockerCommand", getDockerCommand());
         properties.put("forceClean", Boolean.toString(isForceClean()));
         properties.put("afterVerificationWait", Boolean.toString(isForceClean()));
