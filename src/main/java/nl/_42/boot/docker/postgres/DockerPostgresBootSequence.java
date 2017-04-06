@@ -1,5 +1,12 @@
 package nl._42.boot.docker.postgres;
 
+import nl._42.boot.docker.postgres.containers.DockerContainerAvailableCheck;
+import nl._42.boot.docker.postgres.images.DockerImageInformation;
+import nl._42.boot.docker.postgres.images.DockerImageInformationCommand;
+import nl._42.boot.docker.postgres.shared.DockerHeaderMismatch;
+import nl._42.boot.docker.postgres.containers.DockerContainerInformation;
+import nl._42.boot.docker.postgres.containers.DockerContainerInformationCommand;
+import nl._42.boot.docker.postgres.images.DockerImageAvailableCheck;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
@@ -51,14 +58,30 @@ public class DockerPostgresBootSequence {
         // Verify if Docker is available on the command-line
         new DockerAvailableCheck(properties).tryDocker();
 
+        // Read the container list
+        final DockerContainerInformation containers;
+        try {
+            containers = new DockerContainerInformationCommand(properties).interpretDockerContainerListing();
+        } catch (DockerHeaderMismatch ex) {
+            throw new ExceptionInInitializerError(ex.getMessage());
+        }
+
         // Force clean the old container
         if (    properties.isForceClean() &&
-                new DockerContainerAvailableCheck(properties).hasContainer()) {
+                new DockerContainerAvailableCheck(properties, containers).hasContainer()) {
             new DockerForceRemoveContainer(properties).forceRemove();
         }
 
         // Verify if the image is downloaded (influences the timeout)
-        boolean imageDownloaded = new DockerImageAvailableCheck(properties).hasImage();
+        boolean imageDownloaded = false;
+        try {
+            DockerImageInformation images =
+                    new DockerImageInformationCommand(properties).interpretDockerImageListing();
+            imageDownloaded = new DockerImageAvailableCheck(properties, images).hasImage();
+        } catch (DockerHeaderMismatch ex) {
+            // Non-fatal; continue, just assume the image not to have been downloaded
+            LOGGER.warn("| The image information was not read, assuming download not to have taken place");
+        }
 
         // Start up the Docker Postgres container (blocking thread)
         DockerPostgresContainer postgresContainer = new DockerPostgresContainer(properties, imageDownloaded);

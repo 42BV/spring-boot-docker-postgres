@@ -1,8 +1,10 @@
-package nl._42.boot.docker.postgres.containerlist;
+package nl._42.boot.docker.postgres.containers;
 
 import java.util.Map;
 
-public class DockerContainer {
+import nl._42.boot.docker.postgres.shared.DockerEntity;
+
+public class DockerContainer implements DockerEntity {
 
     private String containerId;
     private String image;

@@ -1,11 +1,11 @@
-package nl._42.boot.docker.postgres.containerlist;
+package nl._42.boot.docker.postgres.shared;
 
-public class DockerContainerHeaderImportance {
+public class HeaderImportance {
 
     private boolean crucial;
     private String name;
 
-    DockerContainerHeaderImportance(String name, boolean crucial) {
+    public HeaderImportance(String name, boolean crucial) {
         this.name = name;
         this.crucial = crucial;
     }

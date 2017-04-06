@@ -1,6 +1,7 @@
-package nl._42.boot.docker.postgres.containerlist;
+package nl._42.boot.docker.postgres.containers;
 
 import nl._42.boot.docker.postgres.DockerPostgresProperties;
+import nl._42.boot.docker.postgres.shared.DockerHeaderMismatch;
 import nl._42.boot.docker.utils.DockerFiniteProcessRunner;
 import nl._42.boot.docker.utils.DockerOutputResult;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +17,7 @@ public class DockerContainerInformationCommand extends DockerFiniteProcessRunner
     }
 
     public DockerContainerInformation interpretDockerContainerListing()
-            throws DockerContainerHeadersMismatch, IOException {
+            throws DockerHeaderMismatch, IOException {
         DockerOutputResult result = execute();
         return new DockerContainerInformation(StringUtils.split(result.getStdOut(), "\r\n"));
     }

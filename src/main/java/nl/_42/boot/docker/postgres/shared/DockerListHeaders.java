@@ -1,4 +1,4 @@
-package nl._42.boot.docker.postgres.containerlist;
+package nl._42.boot.docker.postgres.shared;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,32 +6,22 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DockerContainerListHeaders {
+public abstract class DockerListHeaders {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(DockerContainerListHeaders.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(DockerListHeaders.class);
 
-    public static final DockerContainerHeaderImportance[] HEADERS = {
-            new DockerContainerHeaderImportance("CONTAINER ID", false),
-            new DockerContainerHeaderImportance("IMAGE", false),
-            new DockerContainerHeaderImportance("COMMAND", false),
-            new DockerContainerHeaderImportance("CREATED", false),
-            new DockerContainerHeaderImportance("STATUS", true),
-            new DockerContainerHeaderImportance("PORTS", true),
-            new DockerContainerHeaderImportance("NAMES", true)
-    };
-
-    private final String[] headers;
+    private final String[] actualHeaders;
 
     private Map<Integer, Integer> actualToIntendedMapping = new HashMap<>();
 
-    public DockerContainerListHeaders(String[] headers) {
-        this.headers = headers;
+    public DockerListHeaders(String[] actualHeaders) {
+        this.actualHeaders = actualHeaders;
     }
 
-    public void verify() throws DockerContainerHeadersMismatch {
-        if (!verify(HEADERS, headers)) {
-            logFatal(HEADERS, headers);
-            throw new DockerContainerHeadersMismatch();
+    public void verify() throws DockerHeaderMismatch {
+        if (!verify(getExpectedHeaders(), actualHeaders)) {
+            logFatal(getExpectedHeaders(), actualHeaders);
+            throw new DockerHeaderMismatch();
         }
     }
 
@@ -39,12 +29,12 @@ public class DockerContainerListHeaders {
         return actualToIntendedMapping;
     }
 
-    private boolean verify(DockerContainerHeaderImportance[] expectedHeaders, String[] actualHeaders)
-            throws DockerContainerHeadersMismatch {
+    private boolean verify(HeaderImportance[] expectedHeaders, String[] actualHeaders)
+            throws DockerHeaderMismatch {
         boolean valid = true;
 
         Integer expectedColumn = 0;
-        for (DockerContainerHeaderImportance expectedHeader : expectedHeaders) {
+        for (HeaderImportance expectedHeader : expectedHeaders) {
             Integer actualColumn = getActualColumn(expectedHeader.getName(), actualHeaders);
             if (actualColumn == null && expectedHeader.isCrucial()) {
                 valid = false;
@@ -72,7 +62,7 @@ public class DockerContainerListHeaders {
         return null;
     }
 
-    private void logFatal(DockerContainerHeaderImportance[] expectedHeaders, String[] actualHeaders) throws DockerContainerHeadersMismatch {
+    private void logFatal(HeaderImportance[] expectedHeaders, String[] actualHeaders) throws DockerHeaderMismatch {
         LOGGER.error("| The headers from the Docker Container listing do not match the expected headers");
 
         // Verify if the number of headers match
@@ -85,7 +75,7 @@ public class DockerContainerListHeaders {
         int numberOfHeaders = expectedHeaders.length > actualHeaders.length ?
                 expectedHeaders.length : actualHeaders.length;
         for (Integer columnPos = 0; columnPos < numberOfHeaders; columnPos++) {
-            DockerContainerHeaderImportance expectedHeader = columnPos >= expectedHeaders.length ? null : expectedHeaders[columnPos];
+            HeaderImportance expectedHeader = columnPos >= expectedHeaders.length ? null : expectedHeaders[columnPos];
             String actualHeader = columnPos >= actualHeaders.length ? null : actualHeaders[columnPos];
             if (    expectedHeader != null &&
                     actualToIntendedMapping.get(columnPos) == null &&
@@ -98,7 +88,7 @@ public class DockerContainerListHeaders {
     }
 
     private String constructHeaderAssertionResult(Integer columnPos,
-                                                  DockerContainerHeaderImportance expectedHeader,
+                                                  HeaderImportance expectedHeader,
                                                   String actualHeader) {
         return "| " + columnPos + ": expected [" +
                 (expectedHeader == null ? null : expectedHeader.getName()) + "], actual [" +
@@ -120,4 +110,5 @@ public class DockerContainerListHeaders {
         return "";
     }
 
+    protected abstract HeaderImportance[] getExpectedHeaders();
 }
