@@ -22,14 +22,7 @@ public class DockerImageAvailableCheck {
     }
 
     public boolean hasImage() {
-        for (DockerImage image : images.getList()) {
-            if (imageName.equals(image.getRepository()) && imageVersion.equals(image.getTag())) {
-                LOGGER.info("| Image [" + imageName + ":" + imageVersion + "] already downloaded");
-                return true;
-            }
-        }
-        LOGGER.info("| Image [" + imageName + ":" + imageVersion + "] not yet downloaded");
-        return false;
+        return images.hasImage(imageName, imageVersion);
     }
 
 }

@@ -1,12 +1,12 @@
 package nl._42.boot.docker.postgres;
 
 import nl._42.boot.docker.postgres.containers.DockerContainerAvailableCheck;
-import nl._42.boot.docker.postgres.images.DockerImageInformation;
-import nl._42.boot.docker.postgres.images.DockerImageInformationCommand;
-import nl._42.boot.docker.postgres.shared.DockerHeaderMismatch;
 import nl._42.boot.docker.postgres.containers.DockerContainerInformation;
 import nl._42.boot.docker.postgres.containers.DockerContainerInformationCommand;
 import nl._42.boot.docker.postgres.images.DockerImageAvailableCheck;
+import nl._42.boot.docker.postgres.images.DockerImageInformation;
+import nl._42.boot.docker.postgres.images.DockerImageInformationCommand;
+import nl._42.boot.docker.postgres.shared.DockerHeaderMismatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;

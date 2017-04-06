@@ -1,12 +1,13 @@
 package nl._42.boot.docker.postgres;
 
+import nl._42.boot.docker.utils.DockerFiniteProcessRunner;
 import nl._42.boot.docker.utils.DockerOutputResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class DockerAvailableCheck extends AbstractDockerAvailableCheck {
+public class DockerAvailableCheck extends DockerFiniteProcessRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DockerPostgresBootSequence.class);
 
