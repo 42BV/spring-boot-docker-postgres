@@ -1,10 +1,7 @@
 package nl._42.boot.docker.postgres;
 
-import nl._42.boot.docker.postgres.containers.DockerContainerAvailableCheck;
 import nl._42.boot.docker.postgres.containers.DockerContainerInformation;
 import nl._42.boot.docker.postgres.containers.DockerContainerInformationCommand;
-import nl._42.boot.docker.postgres.images.DockerImageAvailableCheck;
-import nl._42.boot.docker.postgres.images.DockerImageInformation;
 import nl._42.boot.docker.postgres.images.DockerImageInformationCommand;
 import nl._42.boot.docker.postgres.shared.DockerHeaderMismatch;
 import org.slf4j.Logger;
@@ -26,7 +23,7 @@ public class DockerPostgresBootSequence {
         this.dataSourceProperties = dataSourceProperties;
     }
 
-    public DockerPostgresContainer execute() throws IOException, InterruptedException {
+    public DockerStartContainerCommand execute() throws IOException, InterruptedException {
 
         LOGGER.info("| Docker Postgres Properties");
         LOGGER.info("| * Image name: " + properties.getImageName());
@@ -56,7 +53,7 @@ public class DockerPostgresBootSequence {
         LOGGER.info("| * Std err: " + properties.getStdErrFilename());
 
         // Verify if Docker is available on the command-line
-        new DockerAvailableCheck(properties).tryDocker();
+        new DockerAvailableCheckCommand(properties).tryDocker();
 
         // Read the container list
         final DockerContainerInformation containers;
@@ -68,23 +65,29 @@ public class DockerPostgresBootSequence {
 
         // Force clean the old container
         if (    properties.isForceClean() &&
-                new DockerContainerAvailableCheck(properties, containers).hasContainer()) {
-            new DockerForceRemoveContainer(properties).forceRemove();
+                containers.hasContainer(properties.getContainerName())) {
+            new DockerForceRemoveContainerCommand(properties).forceRemove();
+        }
+
+        // Check if the port is already in use
+        String containerWithPort = containers.portOccupied(properties.getPort());
+        if (containerWithPort != null && !containerWithPort.equals(properties.getContainerName())) {
+            LOGGER.warn("| The port is already in use by container '" + containerWithPort + "'. THIS DOCKER RUN IS LIKELY TO FAIL");
         }
 
         // Verify if the image is downloaded (influences the timeout)
         boolean imageDownloaded = false;
         try {
-            DockerImageInformation images =
-                    new DockerImageInformationCommand(properties).interpretDockerImageListing();
-            imageDownloaded = new DockerImageAvailableCheck(properties, images).hasImage();
+            imageDownloaded = new DockerImageInformationCommand(properties)
+                    .interpretDockerImageListing()
+                    .hasImage(properties.getImageName(), properties.getImageVersion());
         } catch (DockerHeaderMismatch ex) {
             // Non-fatal; continue, just assume the image not to have been downloaded
             LOGGER.warn("| The image information was not read, assuming download not to have taken place");
         }
 
         // Start up the Docker Postgres container (blocking thread)
-        DockerPostgresContainer postgresContainer = new DockerPostgresContainer(properties, imageDownloaded);
+        DockerStartContainerCommand postgresContainer = new DockerStartContainerCommand(properties, imageDownloaded);
         postgresContainer.start();
         if (postgresContainer.verify()) {
             applyAfterVerificationWait(properties.getAfterVerificationWait());

@@ -37,4 +37,13 @@ public class DockerContainerInformation extends DockerInformation<DockerContaine
         return false;
     }
 
+    public String portOccupied(Integer port) {
+        for (DockerContainer container : getList()) {
+            if (container.portActivelyOccupied(port)) {
+                return container.getNames();
+            }
+        }
+        return null;
+    }
+
 }

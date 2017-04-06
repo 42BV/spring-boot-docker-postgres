@@ -2,7 +2,12 @@ package nl._42.boot.docker.postgres.containers;
 
 import nl._42.boot.docker.postgres.shared.DockerEntity;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DockerContainer implements DockerEntity {
 
@@ -78,6 +83,28 @@ public class DockerContainer implements DockerEntity {
 
     public String getNames() {
         return names;
+    }
+
+    private List<Integer> getExposedPorts() {
+        if (ports == null) {
+            return Collections.emptyList();
+        }
+        List<Integer> exposedPorts = new ArrayList<>();
+
+        Pattern pattern = Pattern.compile("([0-9]*)->[0-9]*");
+        Matcher matcher = pattern.matcher(ports);
+        while (matcher.find()) {
+            exposedPorts.add(Integer.parseInt(matcher.group(1)));
+        }
+        return exposedPorts;
+    }
+
+    private boolean statusIsUp() {
+        return status != null && !status.startsWith("Exited");
+    }
+
+    public boolean portActivelyOccupied(Integer port) {
+        return getExposedPorts().contains(port) && statusIsUp();
     }
 
 }

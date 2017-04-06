@@ -4,11 +4,11 @@ import nl._42.boot.docker.utils.DockerInfiniteProcessRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DockerPostgresContainer extends DockerInfiniteProcessRunner {
+public class DockerStartContainerCommand extends DockerInfiniteProcessRunner {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DockerPostgresContainer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DockerStartContainerCommand.class);
 
-    public DockerPostgresContainer(DockerPostgresProperties properties, boolean imageDownloaded) {
+    public DockerStartContainerCommand(DockerPostgresProperties properties, boolean imageDownloaded) {
         super(properties.getDockerCommand(), properties, imageDownloaded);
 
         if (!imageDownloaded) {

@@ -7,13 +7,13 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class DockerAvailableCheck extends DockerFiniteProcessRunner {
+public class DockerAvailableCheckCommand extends DockerFiniteProcessRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DockerPostgresBootSequence.class);
 
     private final static String COMMAND = "docker --version";
 
-    public DockerAvailableCheck(DockerPostgresProperties properties) {
+    public DockerAvailableCheckCommand(DockerPostgresProperties properties) {
         super(COMMAND, properties);
     }
 
