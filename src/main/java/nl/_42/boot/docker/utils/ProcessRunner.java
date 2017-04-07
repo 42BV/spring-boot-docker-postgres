@@ -16,31 +16,54 @@ public class ProcessRunner {
     private final String[] command;
     private final String stdOutFilename;
     private final String stdErrFilename;
+    private final boolean infinite;
 
     public ProcessRunner(String command,
                          DockerPostgresProperties properties) {
+        this(command, properties, false);
+    }
+
+    public ProcessRunner(String command,
+                         DockerPostgresProperties properties,
+                         boolean infinite) {
         super();
 
         this.command = replacePlaceholders(properties.getProperties(), command);
         this.stdOutFilename = properties.getStdOutFilename();
         this.stdErrFilename = properties.getStdErrFilename();
-
-        removeFiles();
+        this.infinite = infinite;
+        removeFiles(false);
+        createFiles();
     }
 
-    private void removeFiles() {
+    protected void removeFiles() {
+        removeFiles(true);
+    }
+
+    private void removeFiles(boolean checkForInfinity) {
+        if (checkForInfinity && infinite) {
+            return; // No cleaning
+        }
+        removeFile(this.stdErrFilename);
+        removeFile(this.stdOutFilename);
+    }
+
+    private static void removeFile(String standardOutFilename) {
+        File output = new File(standardOutFilename);
+        output.delete();
+    }
+
+    private void createFiles() {
         try {
-            cleanupFile(this.stdErrFilename);
-            cleanupFile(this.stdOutFilename);
+            createFile(this.stdErrFilename);
+            createFile(this.stdOutFilename);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
 
-    private static void cleanupFile(String standardOutFilename) throws IOException {
-        File output = new File(standardOutFilename);
-        output.delete();
+    private static void createFile(String filename) throws IOException {
+        File output = new File(filename);
         output.createNewFile();
     }
 

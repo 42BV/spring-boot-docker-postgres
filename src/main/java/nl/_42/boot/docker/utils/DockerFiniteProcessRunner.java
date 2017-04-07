@@ -31,20 +31,24 @@ public abstract class DockerFiniteProcessRunner {
     }
 
     public DockerOutputResult execute() throws IOException {
-        int exitValue = processRunner.execute();
+        try {
+            int exitValue = processRunner.execute();
 
-        DockerOutputResult result = new DockerOutputResult(
-                readFile(stdOutFilename, Charset.defaultCharset()),
-                readFile(stdErrFilename, Charset.defaultCharset()),
-                exitValue);
+            DockerOutputResult result = new DockerOutputResult(
+                    readFile(stdOutFilename, Charset.defaultCharset()),
+                    readFile(stdErrFilename, Charset.defaultCharset()),
+                    exitValue);
 
-        if (result.getExitCode() != 0) {
-            result.logErrLines();
-            LOGGER.error("| Docker command: " + command + " failed to execute");
-            throw new ExceptionInInitializerError("Docker command: " + command + " failed to execute");
+            if (result.getExitCode() != 0) {
+                result.logErrLines();
+                LOGGER.error("| Docker command: " + command + " failed to execute");
+                throw new ExceptionInInitializerError("Docker command: " + command + " failed to execute");
+            }
+
+            return result;
+        } finally {
+            processRunner.removeFiles();
         }
-
-        return result;
     }
 
     static String readFile(String path, Charset encoding)

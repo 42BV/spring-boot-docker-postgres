@@ -14,9 +14,7 @@ public abstract class DockerInfiniteProcessRunner extends Thread {
                                        DockerPostgresProperties properties,
                                        boolean imageDownloaded) {
         super();
-
-        processRunner = new ProcessRunner(command, properties);
-
+        processRunner = new ProcessRunner(command, properties, true);
         this.tailer = new DockerInfiniteProcessTailer(this, properties, imageDownloaded);
     }
 
