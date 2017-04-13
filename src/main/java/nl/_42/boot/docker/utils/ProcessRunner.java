@@ -108,6 +108,8 @@ public class ProcessRunner {
         } catch (InterruptedException err) {
             LOGGER.info("| Interruption signal received, proceeding to destroy process");
             process.destroy();
+            LOGGER.info("| Remove the Docker stdout / stderr log files");
+            removeFiles(false);
             LOGGER.info("| Process destroyed");
             return 0;
         }
