@@ -1,6 +1,8 @@
 package nl._42.boot.docker.utils;
 
 import nl._42.boot.docker.postgres.DockerPostgresProperties;
+import nl._42.boot.docker.postgres.logs.DockerLogsCommand;
+import nl._42.boot.docker.postgres.logs.DockerLogsRepeater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,57 +13,37 @@ public class DockerInfiniteProcessTailer {
     private static final Logger LOGGER = LoggerFactory.getLogger(DockerInfiniteProcessTailer.class);
 
     private final Thread dockerThread;
-    private final String dockerStandardOutFilename;
     private final String dockerStandardErrorFilename;
-    private final String startupVerificationText;
-    private final Integer timesExpectedVerificationText;
     private final Integer timeout;
+    private final DockerPostgresProperties properties;
+    private final DockerLogsRepeater dockerLogsRepeater;
 
     private Integer sleepTime = 0;
-    private Integer verificationTextEncountered = 0;
 
     public DockerInfiniteProcessTailer( Thread dockerThread,
                                         DockerPostgresProperties properties,
                                         boolean imageDownloaded) {
         this.dockerThread = dockerThread;
-        this.dockerStandardOutFilename = properties.getStdOutFilename();
-        this.dockerStandardErrorFilename = properties.getStdErrFilename();
-        this.startupVerificationText = properties.getStartupVerificationText();
-        this.timesExpectedVerificationText = properties.getTimesExpectedVerificationText();
         this.timeout = imageDownloaded ? properties.getTimeout() : -1;
+        this.dockerStandardErrorFilename = properties.getStdErrFilename();
+        this.properties = properties;
+        dockerLogsRepeater = new DockerLogsRepeater(
+                properties.getStartupVerificationText(),
+                properties.getTimesExpectedVerificationText());
         LOGGER.info("| Applied timeout: (-1 means no timeout): " + this.timeout);
     }
 
     public boolean verify() throws IOException {
 
-        final BufferedInputStream reader;
         try {
-            reader = new BufferedInputStream(new FileInputStream( dockerStandardOutFilename) );
-        } catch (FileNotFoundException e) {
-            throw e;
-        }
-
-        try {
-            StringBuilder line = new StringBuilder();
             while(true) {
-                if( reader.available() > 0 ) {
-                    char readChar = (char)reader.read();
-                    if (readChar == '\n') {
-                        LOGGER.info("| > " + line.toString());
-                        if (line.toString().contains(startupVerificationText)) {
-                            verificationTextEncountered++;
-                            LOGGER.info("| = Verification text encountered " + verificationTextEncountered + "x");
-                            if (verificationTextEncountered == timesExpectedVerificationText) {
-                                LOGGER.info("| > " + line.toString());
-                                LOGGER.info("| = Docker startup verification text found");
-                                logErrorLinesAsWarning();
-                                return true;
-                            }
-                        }
-                        line = new StringBuilder();
-                    } else {
-                        line.append(readChar);
-                    }
+                // Temp measure...
+                try { Thread.sleep( 500 ); } catch (InterruptedException e) { e.printStackTrace(); }
+                DockerLogsCommand dockerLogsCommand = new DockerLogsCommand(properties, dockerLogsRepeater);
+
+                if (dockerLogsCommand.hasStarted()) {
+                    logErrorLinesAsWarning();
+                    return true;
                 }
                 else {
                     try {
@@ -88,10 +70,6 @@ public class DockerInfiniteProcessTailer {
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            reader.close();
         }
 
         logErrorLinesAsError();

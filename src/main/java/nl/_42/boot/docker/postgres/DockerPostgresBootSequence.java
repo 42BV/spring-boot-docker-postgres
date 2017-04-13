@@ -52,6 +52,8 @@ public class DockerPostgresBootSequence {
         }
         LOGGER.info("| * Std out: " + properties.getStdOutFilename());
         LOGGER.info("| * Std err: " + properties.getStdErrFilename());
+        LOGGER.info("| * Docker logs std out: " + properties.getDockerLogsStdOutFilename());
+        LOGGER.info("| * Docker logs std err: " + properties.getDockerLogsStdErrFilename());
 
         // Verify if Docker is available on the command-line
         new DockerAvailableCheckCommand(properties).tryDocker();

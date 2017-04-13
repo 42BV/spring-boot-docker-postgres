@@ -21,13 +21,21 @@ public abstract class DockerFiniteProcessRunner {
 
     public DockerFiniteProcessRunner(  String command,
                                        DockerPostgresProperties properties) {
+
+        this(command, properties.getStdOutFilename(), properties.getStdErrFilename(), properties);
+    }
+
+    public DockerFiniteProcessRunner(  String command,
+                                       String stdOutFilename,
+                                       String stdErrFilename,
+                                       DockerPostgresProperties properties) {
         super();
 
         this.command = command;
-        this.stdOutFilename = properties.getStdOutFilename();
-        this.stdErrFilename = properties.getStdErrFilename();
+        this.stdOutFilename = stdOutFilename;
+        this.stdErrFilename = stdErrFilename;
 
-        processRunner = new ProcessRunner(command, properties);
+        processRunner = new ProcessRunner(command, stdOutFilename, stdErrFilename, properties);
     }
 
     public DockerOutputResult execute() throws IOException {

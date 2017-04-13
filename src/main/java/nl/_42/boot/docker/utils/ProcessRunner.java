@@ -18,27 +18,40 @@ public class ProcessRunner {
     private final String stdErrFilename;
     private final boolean infinite;
 
-    public ProcessRunner(String command,
+    public ProcessRunner(String command, String stdOut, String stdErr,
                          DockerPostgresProperties properties) {
-        this(command, properties, false);
+        this(command, stdOut, stdErr, properties, false);
     }
 
     public ProcessRunner(String command,
                          DockerPostgresProperties properties,
                          boolean infinite) {
+        this(
+                command,
+                properties.getStdOutFilename(),
+                properties.getStdErrFilename(),
+                properties,
+                infinite);
+    }
+
+    private ProcessRunner(String command,
+                         String stdOut,
+                         String stdErr,
+                         DockerPostgresProperties properties,
+                         boolean infinite) {
         super();
 
         this.command = replacePlaceholders(properties.getProperties(), command);
-        this.stdOutFilename = properties.getStdOutFilename();
-        this.stdErrFilename = properties.getStdErrFilename();
+        this.stdOutFilename = stdOut;
+        this.stdErrFilename = stdErr;
         this.infinite = infinite;
         removeFiles(false);
         createFiles();
     }
 
     protected void removeFiles() {
-        removeFiles(true);
-    }
+    removeFiles(true);
+}
 
     private void removeFiles(boolean checkForInfinity) {
         if (checkForInfinity && infinite) {

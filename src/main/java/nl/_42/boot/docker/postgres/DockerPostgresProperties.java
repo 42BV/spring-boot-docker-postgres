@@ -14,6 +14,10 @@ public class DockerPostgresProperties {
 
     private String stdErrFilename = "docker-std-err.log";
 
+    private String dockerLogsStdOutFilename = "docker-logs-std-out.log";
+
+    private String dockerLogsStdErrFilename = "docker-logs-std-err.log";
+
     private String password = "postgres";
 
     private Integer port = null;
@@ -28,7 +32,7 @@ public class DockerPostgresProperties {
 
     private Integer timesExpectedVerificationText = 2;
 
-    private String dockerCommand = "docker run --rm --tty -e POSTGRES_PASSWORD=${password} -p ${port}:5432 --name ${containerName} ${imageName}:${imageVersion}";
+    private String dockerCommand = "docker run --rm -e POSTGRES_PASSWORD=${password} -p ${port}:5432 --name ${containerName} ${imageName}:${imageVersion}";
 
     private Integer timeout = 300000; // 5 minutes because of time required for downloading?
 
@@ -178,10 +182,28 @@ public class DockerPostgresProperties {
         this.containerOccupyingPort = containerOccupyingPort;
     }
 
+    public String getDockerLogsStdOutFilename() {
+        return dockerLogsStdOutFilename;
+    }
+
+    public void setDockerLogsStdOutFilename(String dockerLogsStdOutFilename) {
+        this.dockerLogsStdOutFilename = dockerLogsStdOutFilename;
+    }
+
+    public String getDockerLogsStdErrFilename() {
+        return dockerLogsStdErrFilename;
+    }
+
+    public void setDockerLogsStdErrFilename(String dockerLogsStdErrFilename) {
+        this.dockerLogsStdErrFilename = dockerLogsStdErrFilename;
+    }
+
     public Map<String, String> getProperties() {
         Map<String,String> properties = new HashMap<>();
         properties.put("stdOutFilename", getStdOutFilename());
         properties.put("stdErrFilename", getStdErrFilename());
+        properties.put("dockerLogsStdOutFilename", getDockerLogsStdOutFilename());
+        properties.put("dockerLogsStdErrFilename", getDockerLogsStdErrFilename());
         properties.put("timeout", getTimeout().toString());
         properties.put("password", getPassword());
         properties.put("port", getPort().toString());
