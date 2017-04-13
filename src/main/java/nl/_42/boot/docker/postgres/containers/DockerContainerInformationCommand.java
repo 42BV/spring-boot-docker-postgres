@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class DockerContainerInformationCommand extends DockerFiniteProcessRunner {
 
-    private final static String COMMAND = "docker ps";
+    private final static String COMMAND = "docker ps --all";
 
     public DockerContainerInformationCommand(DockerPostgresProperties properties) {
         super(COMMAND, properties);
