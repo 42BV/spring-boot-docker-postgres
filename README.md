@@ -40,14 +40,14 @@ Add the following two dependencies to your POM. This is enough to make it all wo
 <dependency>
     <groupId>nl.42</groupId>
     <artifactId>spring-boot-starter-docker</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
     <scope>provided</scope>
 </dependency>
 
 <dependency>
     <groupId>nl.42</groupId>
     <artifactId>spring-boot-docker-postgres</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
     <scope>provided</scope>
 </dependency>
 ```
@@ -64,7 +64,8 @@ You can tweak the configuration to use for your Docker run.
 | custom-variables          | contains a map of your own variables. These can be used to substitute values if you provide your own docker-command. No default |
 | docker-command            | the docker command to use to start the container with postgres. Default: 'docker run --rm -e POSTGRES_PASSWORD=${password} -p 5432:${port} --name ${containerName} ${imageName}:${imageVersion}' |
 | enabled                   | determines if the Postgres container must be started. Default: true |
-| force-clean               | determines if the container must be removed if it already exists. Default: false|
+| force-clean               | determines if the container must be removed if it already exists. Default: true|
+| force-clean-afterwards    | when the docker processes finishes, clean up the container. Default: true|
 | image-name                | the image name to be used for deploying the container. Default: postgres |
 | image-version             | the version of the image to be used for deploying the container. Advice is to specify wherever possible. Default: latest |
 | password                  | the password used to apply for the database on the container. Default: postgres |
@@ -173,7 +174,7 @@ This can be remedied by applying a post startup verification wait time (in milli
 ```yaml
 docker:
   postgres:
-    afterVerificationWait: 2000
+    after-verification-wait: 2000
 ```
 
 In this example, it will wait for an extra 2 seconds.
