@@ -99,6 +99,11 @@ public class DockerContainer implements DockerEntity {
         return exposedPorts;
     }
 
+    public void repairIfNameInPort() {
+        this.names = ports;
+        this.ports = null;
+    }
+
     private boolean statusIsUp() {
         return status != null && !status.startsWith("Exited");
     }

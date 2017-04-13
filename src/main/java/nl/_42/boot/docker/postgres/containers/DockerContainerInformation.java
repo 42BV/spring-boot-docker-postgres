@@ -14,6 +14,14 @@ public class DockerContainerInformation extends DockerInformation<DockerContaine
 
     public DockerContainerInformation(String[] lines) throws DockerHeaderMismatch {
         super(lines);
+        checkForMissingPorts();
+    }
+
+    private void checkForMissingPorts() {
+        for (DockerContainer container : getList()) {
+            // Implies no port, names are in the port column
+            if (container.getNames() == null) container.repairIfNameInPort();
+        }
     }
 
     @Override

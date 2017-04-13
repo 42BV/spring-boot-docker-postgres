@@ -34,7 +34,11 @@ public class DockerPostgresProperties {
 
     private boolean forceClean = true;
 
+    private boolean stopPortOccupyingContainer = true;
+
     private Integer afterVerificationWait = 0;
+
+    private String containerOccupyingPort = null;
 
     private Map<String, String> customVariables = new HashMap<>();
 
@@ -158,6 +162,22 @@ public class DockerPostgresProperties {
         this.timesExpectedVerificationText = timesExpectedVerificationText;
     }
 
+    public boolean isStopPortOccupyingContainer() {
+        return stopPortOccupyingContainer;
+    }
+
+    public void setStopPortOccupyingContainer(boolean stopPortOccupyingContainer) {
+        this.stopPortOccupyingContainer = stopPortOccupyingContainer;
+    }
+
+    public String getContainerOccupyingPort() {
+        return containerOccupyingPort;
+    }
+
+    public void setContainerOccupyingPort(String containerOccupyingPort) {
+        this.containerOccupyingPort = containerOccupyingPort;
+    }
+
     public Map<String, String> getProperties() {
         Map<String,String> properties = new HashMap<>();
         properties.put("stdOutFilename", getStdOutFilename());
@@ -173,7 +193,9 @@ public class DockerPostgresProperties {
         properties.put("afterVerificationWait", getAfterVerificationWait().toString());
         properties.put("dockerCommand", getDockerCommand());
         properties.put("forceClean", Boolean.toString(isForceClean()));
+        properties.put("stopPortOccupyingContainer", Boolean.toString(isStopPortOccupyingContainer()));
         properties.put("afterVerificationWait", Boolean.toString(isForceClean()));
+        properties.put("containerOccupyingPort", getContainerOccupyingPort());
         properties.putAll(getCustomVariables());
         return properties;
     }

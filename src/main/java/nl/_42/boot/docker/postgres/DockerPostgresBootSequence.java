@@ -29,6 +29,7 @@ public class DockerPostgresBootSequence {
         LOGGER.info("| * Image name: " + properties.getImageName());
         LOGGER.info("| * Image version: " + properties.getImageVersion());
         LOGGER.info("| * Force clean: " + properties.isForceClean());
+        LOGGER.info("| * Stop port occupying container: " + properties.isStopPortOccupyingContainer());
         LOGGER.info("| * Timeout: " + properties.getTimeout());
         LOGGER.info("| * Container name: " + properties.getContainerName());
         if (properties.getPort() == null) {
@@ -72,7 +73,12 @@ public class DockerPostgresBootSequence {
         // Check if the port is already in use
         String containerWithPort = containers.portOccupied(properties.getPort());
         if (containerWithPort != null && !containerWithPort.equals(properties.getContainerName())) {
-            LOGGER.warn("| The port is already in use by container '" + containerWithPort + "'. THIS DOCKER RUN IS LIKELY TO FAIL");
+            if (properties.isStopPortOccupyingContainer()) {
+                properties.setContainerOccupyingPort(containerWithPort);
+                new DockerStopContainerCommand(properties).stopContainer();
+            } else {
+                LOGGER.warn("| The port is already in use by container '" + containerWithPort + "'. THIS DOCKER RUN IS LIKELY TO FAIL");
+            }
         }
 
         // Verify if the image is downloaded (influences the timeout)
