@@ -34,6 +34,8 @@ public class DockerPostgresProperties {
 
     private boolean forceClean = true;
 
+    private boolean forceCleanAfterwards = true;
+
     private boolean stopPortOccupyingContainer = true;
 
     private Integer afterVerificationWait = 0;
@@ -178,6 +180,14 @@ public class DockerPostgresProperties {
         this.containerOccupyingPort = containerOccupyingPort;
     }
 
+    public boolean isForceCleanAfterwards() {
+        return forceCleanAfterwards;
+    }
+
+    public void setForceCleanAfterwards(boolean forceCleanAfterwards) {
+        this.forceCleanAfterwards = forceCleanAfterwards;
+    }
+
     public Map<String, String> getProperties() {
         Map<String,String> properties = new HashMap<>();
         properties.put("stdOutFilename", getStdOutFilename());
@@ -193,6 +203,7 @@ public class DockerPostgresProperties {
         properties.put("afterVerificationWait", getAfterVerificationWait().toString());
         properties.put("dockerCommand", getDockerCommand());
         properties.put("forceClean", Boolean.toString(isForceClean()));
+        properties.put("forceCleanAfterwards", Boolean.toString(isForceCleanAfterwards()));
         properties.put("stopPortOccupyingContainer", Boolean.toString(isStopPortOccupyingContainer()));
         properties.put("afterVerificationWait", Boolean.toString(isForceClean()));
         properties.put("containerOccupyingPort", getContainerOccupyingPort());

@@ -1,5 +1,6 @@
 package nl._42.boot.docker.utils;
 
+import nl._42.boot.docker.postgres.DockerForceRemoveContainerCommand;
 import nl._42.boot.docker.postgres.DockerPostgresProperties;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ public class ProcessRunner {
     private final String stdOutFilename;
     private final String stdErrFilename;
     private final boolean infinite;
+    private DockerPostgresProperties properties;
 
     public ProcessRunner(String command,
                          DockerPostgresProperties properties) {
@@ -32,6 +34,7 @@ public class ProcessRunner {
         this.stdOutFilename = properties.getStdOutFilename();
         this.stdErrFilename = properties.getStdErrFilename();
         this.infinite = infinite;
+        this.properties = properties;
         removeFiles(false);
         createFiles();
     }
@@ -110,6 +113,14 @@ public class ProcessRunner {
             process.destroy();
             LOGGER.info("| Remove the Docker stdout / stderr log files");
             removeFiles(false);
+            if (properties.isForceCleanAfterwards()) {
+                LOGGER.info("| Forcibly remove the container [" + properties.getContainerName() + "]");
+                try {
+                    new DockerForceRemoveContainerCommand(properties).forceRemove();
+                } catch (Exception ex) {
+                    LOGGER.debug("| Removal of container [" + properties.getContainerName() + "] failed");
+                }
+            }
             LOGGER.info("| Process destroyed");
             return 0;
         }
