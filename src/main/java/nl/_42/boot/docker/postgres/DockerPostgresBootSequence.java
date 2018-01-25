@@ -12,7 +12,6 @@ import java.io.IOException;
 
 public class DockerPostgresBootSequence {
 
-    private static final Integer DEFAULT_PORT = 5432;
     private static final Logger LOGGER = LoggerFactory.getLogger(DockerPostgresBootSequence.class);
 
     private final DockerPostgresProperties properties;
@@ -25,6 +24,7 @@ public class DockerPostgresBootSequence {
 
     public DockerStartContainerCommand execute() throws IOException, InterruptedException {
 
+        properties.init(dataSourceProperties.getUrl());
         LOGGER.info("| Docker Postgres Properties");
         LOGGER.info("| * Image name: " + properties.getImageName());
         LOGGER.info("| * Image version: " + properties.getImageVersion());
@@ -32,23 +32,21 @@ public class DockerPostgresBootSequence {
         LOGGER.info("| * Stop port occupying container: " + properties.isStopPortOccupyingContainer());
         LOGGER.info("| * Timeout: " + properties.getTimeout());
         LOGGER.info("| * Container name: " + properties.getContainerName());
-        if (properties.getPort() == null) {
-            if (dataSourceProperties.getUrl() != null) {
-                properties.setPort(determinePort(dataSourceProperties.getUrl()));
-                // Scrap the port from the JDBC URL
-            } else {
-                properties.setPort(DEFAULT_PORT);
-            }
-        }
         LOGGER.info("| * Port: " + properties.getPort());
         LOGGER.info("| * Password: " + properties.getPassword());
         LOGGER.info("| * Startup Verification Text: [" + properties.getStartupVerificationText() + "]");
         LOGGER.info("| * Times expected verification text: " + properties.getTimesExpectedVerificationText() + "x");
         LOGGER.info("| * After verification wait: " + properties.getAfterVerificationWait() + "ms");
         LOGGER.info("| * Docker command: [" + properties.getDockerCommand() + "]");
+        LOGGER.info("| * Use Docker command: [" + properties.getUseDockerCommand() + "]");
         LOGGER.info("| * Custom variables (" + properties.getCustomVariables().size() + ")");
         for (String key : properties.getCustomVariables().keySet()) {
             LOGGER.info("|   - " + key + ": " + properties.getCustomVariables().get(key));
+        }
+        LOGGER.info("| * In memory: " + properties.isInMemory());
+        LOGGER.info("| * In memory mount destinations");
+        for (String inMemoryMountDestination : properties.getInMemoryMountDestinations()) {
+            LOGGER.info("|   - " + inMemoryMountDestination);
         }
         LOGGER.info("| * Std out: " + properties.getStdOutFilename());
         LOGGER.info("| * Std err: " + properties.getStdErrFilename());
@@ -104,18 +102,6 @@ public class DockerPostgresBootSequence {
         }
 
         return postgresContainer;
-    }
-
-    private Integer determinePort(String url) {
-        if (url == null || url.length() == 0) {
-            throw new ExceptionInInitializerError("spring.datasource.url is empty. No port could be derived.");
-        }
-        int lastColonPos = url.lastIndexOf(':');
-        int slashAfterPortPos = url.indexOf('/', lastColonPos);
-        if (lastColonPos == -1 || slashAfterPortPos == -1 || slashAfterPortPos < lastColonPos + 2) {
-            throw new ExceptionInInitializerError("spring.datasource.url does not have port information: [" + url + "]. No port could be derived.");
-        }
-        return Integer.parseInt(url.substring(lastColonPos + 1, slashAfterPortPos));
     }
 
     private void applyAfterVerificationWait(Integer afterVerificationWait) throws InterruptedException {
