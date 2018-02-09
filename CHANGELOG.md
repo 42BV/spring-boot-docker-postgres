@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+## [0.7.2] - 2018-02-09
 ### Fixed
 - Issue [#31](https://github.com/42BV/spring-boot-docker-postgres/issues/31), **Docker stop command runs the wrong argument**; when the library notices another Docker container occupies the port that it needs to run on, a ```docker stop``` command is initiated for the port-occupying container. However, this logic was flawed, as it tried to stop a container with the same name as the container that had to be started. Fixed by using the proper container name.
 

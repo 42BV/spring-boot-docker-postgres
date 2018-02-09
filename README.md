@@ -47,7 +47,7 @@ Add the following two dependencies to your POM. This is enough to make it all wo
 <dependency>
     <groupId>nl.42</groupId>
     <artifactId>spring-boot-docker-postgres</artifactId>
-    <version>0.7.1</version>
+    <version>0.7.2</version>
     <scope>provided</scope>
 </dependency>
 ```
