@@ -18,7 +18,7 @@ public class DockerStopContainerCommand extends DockerFiniteProcessRunner {
 
     public DockerStopContainerCommand(DockerPostgresProperties properties) {
         super(COMMAND, properties);
-        this.containerName = properties.getContainerName();
+        this.containerName = properties.getContainerOccupyingPort();
         this.port = properties.getPort();
     }
 
