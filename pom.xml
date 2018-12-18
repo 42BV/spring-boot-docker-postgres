@@ -1,21 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>spring-boot-docker-postgres</artifactId>
-    <version>0.7.3-SNAPSHOT</version>
+    <version>1.0.0.JAVA.11</version>
     <packaging>jar</packaging>
     <groupId>nl.42</groupId>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.4.1.RELEASE</version>
+        <version>2.1.1.RELEASE</version>
     </parent>
 
     <name>Spring Boot Docker Postgres</name>
     <description>Spring Boot Docker project for running the Postgres container</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>4.12</junit.version>
     </properties>
