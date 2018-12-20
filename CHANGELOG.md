@@ -4,7 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [1.0.1] - 2018-12-19
+### Changed
+- Project is now built with java 1.8 to keep it backwards compatible with this jvm.
+
+## [1.0.0.JAVA.11] - 2018-12-18
+### Changed
+- Project is built with java 11
+- Dependencies upgraded to be able to run on java 11
 
 ## [0.7.2] - 2018-02-09
 ### Fixed
