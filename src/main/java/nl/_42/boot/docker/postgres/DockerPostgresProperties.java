@@ -44,6 +44,8 @@ public class DockerPostgresProperties {
 
     private Map<String, String> customVariables = new HashMap<>();
 
+    private boolean stopIfContainerExists = false;
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -188,6 +190,14 @@ public class DockerPostgresProperties {
         this.forceCleanAfterwards = forceCleanAfterwards;
     }
 
+    public boolean isStopIfContainerExists() {
+        return stopIfContainerExists;
+    }
+
+    public void setStopIfContainerExists(boolean stopIfContainerExists) {
+        this.stopIfContainerExists = stopIfContainerExists;
+    }
+
     public Map<String, String> getProperties() {
         Map<String,String> properties = new HashMap<>();
         properties.put("stdOutFilename", getStdOutFilename());
@@ -210,5 +220,4 @@ public class DockerPostgresProperties {
         properties.putAll(getCustomVariables());
         return properties;
     }
-
 }

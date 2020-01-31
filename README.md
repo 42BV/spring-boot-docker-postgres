@@ -73,6 +73,7 @@ You can tweak the configuration to use for your Docker run.
 | startup-verification-text | the text that will be searched within the Docker log. If found, the Postgres container is available. Default: "PostgreSQL init process complete; ready for start up." |
 | std-out-filename          | the file to write the Docker output to. Default: "docker-std-out.log" |
 | std-err-filename          | the file to write the Docker errors to. Default: docker-std-err.log |
+| stop-if-container-exists          | stop the process if a container with 'container-name' exists. Default: false |
 | timeout                   | the timeout to apply for booting the container. Note that the value will not be used if the image has to be downloaded. Default: 300000 (5 minutes) |
 
 ## Best practices

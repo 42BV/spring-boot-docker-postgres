@@ -46,6 +46,7 @@ public class DockerPostgresBootSequence {
         LOGGER.info("| * Times expected verification text: " + properties.getTimesExpectedVerificationText() + "x");
         LOGGER.info("| * After verification wait: " + properties.getAfterVerificationWait() + "ms");
         LOGGER.info("| * Docker command: [" + properties.getDockerCommand() + "]");
+        LOGGER.info("| * Stop if container exists: [" + properties.isStopIfContainerExists() + "]");
         LOGGER.info("| * Custom variables (" + properties.getCustomVariables().size() + ")");
         for (String key : properties.getCustomVariables().keySet()) {
             LOGGER.info("|   - " + key + ": " + properties.getCustomVariables().get(key));
@@ -64,6 +65,11 @@ public class DockerPostgresBootSequence {
             throw new ExceptionInInitializerError(ex.getMessage());
         }
 
+        String containerWithPort = containers.portOccupied(properties.getPort());
+        if(containerWithPort != null && containerWithPort.equals(properties.getContainerName()) && properties.isStopIfContainerExists()) {
+            return null;
+        }
+
         // Force clean the old container
         if (    properties.isForceClean() &&
                 containers.hasContainer(properties.getContainerName())) {
@@ -71,7 +77,6 @@ public class DockerPostgresBootSequence {
         }
 
         // Check if the port is already in use
-        String containerWithPort = containers.portOccupied(properties.getPort());
         if (containerWithPort != null && !containerWithPort.equals(properties.getContainerName())) {
             if (properties.isStopPortOccupyingContainer()) {
                 properties.setContainerOccupyingPort(containerWithPort);
